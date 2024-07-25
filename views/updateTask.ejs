@@ -1,0 +1,12 @@
+
+<h2><%= title %></h2>
+<form action="/tasks/<%= task.id %>?_method=PUT" method="POST">
+    <label for="titulo">Título:</label>
+    <input type="text" id="title" name="title" value="<%= task.título %>" required>
+    <label for="descripcion">Descripción:</label>
+    <textarea id="descripcion" name="descripcion" required><%= task.descripcion %></textarea>
+    <label for="estado">Estado:</label>
+    <input type="text" id="estado" name="estado" value="<%= task.estado %>" required>
+    <button type="submit">Actualizar Tarea</button>
+</form>
+<a href="/tasks/<%= task.id %>">Volver a los detalles</a>

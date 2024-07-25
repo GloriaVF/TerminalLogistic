@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <main>
+        <h2><%= title %></h2>
+        <!-- Botón y formulario para agregar una nueva tarea -->
+        <a href="#" class="btn" onclick="toggleForm()">Agregar Tarea</a>
+
+        <div id="new-task-form" style="display: none;">
+            <form id="add-task-form" action="/tasks" method="POST" onsubmit="addTask(event)">
+                <label for="título">Título:</label>
+                <input type="text" id="título" name="título" required>
+                <label for="descripcion">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" required></textarea>
+                <label for="estado">Estado:</label>
+                <input type="text" id="estado" name="estado" required>
+                <button type="submit">Agregar Tarea</button>
+            </form>
+        </div>
+
+        <table border="1" style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Título</th>
+                    <th>Descripción</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="task-table-body">
+                <% tasks.forEach(task => { %>
+                    <tr id="task-<%= task.id %>">
+                        <td><%= task.id %></td>
+                        <td><%= task.título %></td>
+                        <td><%= task.descripcion %></td>
+                        <td><%= task.estado %></td>
+                        <td>
+                            <a href="/tasks/<%= task.id %>" class="btn">Actualizar</a>
+                            <form action="/tasks/<%= task.id %>?_method=PUT" method="POST" style="display:inline;">
+                                <input type="hidden" name="estado" value="completada">
+                                <button type="submit" class="btn" onclick="return confirm('¿Estás seguro de que deseas completar esta tarea?')">Terminar Tarea</button>
+                            </form>
+                            <form action="/tasks/<%= task.id %>?_method=DELETE" method="POST" style="display:inline;">
+                                <button type="submit" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarea?')">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </main>
+    <footer>
+        <p>Aplicación de gestión de tareas © 2024</p>
+    </footer>
+
+    <script>
+        function toggleForm() {
+            const form = document.getElementById('new-task-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+    
+        async function addTask(event) {
+            event.preventDefault();
+            const form = document.getElementById('add-task-form');
+            const formData = new FormData(form);
+    
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+    
+            try {
+                const response = await fetch('/tasks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+    
+                if (response.ok) {
+                    const newTask = await response.json();
+                    addTaskToTable(newTask);
+                    form.reset(); 
+                    toggleForm();
+                } else {
+                    alert('Error al agregar la tarea.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    
+        function addTaskToTable(task) {
+            const tbody = document.getElementById('task-table-body');
+            const newRow = document.createElement('tr');
+            newRow.id = `task-${task.id}`;
+            newRow.innerHTML = `
+                <td>${task.id}</td>
+                <td>${task.título}</td>
+                <td>${task.descripcion}</td>
+                <td>${task.estado}</td>
+                <td>
+                    <a href="/tasks/${task.id}" class="btn">Actualizar</a>
+                    <form action="/tasks/${task.id}?_method=PUT" method="POST" style="display:inline;">
+                                <input type="hidden" name="estado" value="completada">
+                                <button type="submit" class="btn" onclick="return confirm('¿Estás seguro de que deseas completar esta tarea?')">Terminar Tarea</button>
+                    </form>
+                    <form action="/tasks/${task.id}?_method=DELETE" method="POST" style="display:inline;">
+                        <button type="submit" class="btn" onclick="return confirm('¿Estás seguro de que deseas eliminar esta tarea?')">Eliminar</button>
+                    </form>
+                </td>
+            `;
+            tbody.appendChild(newRow);
+        }
+    </script>
+    
+</body>
+</html>

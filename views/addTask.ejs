@@ -1,0 +1,12 @@
+
+<h2><%= title %></h2>
+<form action="/tasks" method="POST">
+    <label for="título">Título:</label>
+    <input type="text" id="título" name="título" required>
+    <label for="descripcion">Descripción:</label>
+    <textarea id="descripcion" name="descripcion" required></textarea>
+    <label for="estado">Estado:</label>
+    <input type="text" id="estado" name="estado" required>
+    <button type="submit">Agregar Tarea</button>
+</form>
+<a href="/tasks">Volver a la lista</a>

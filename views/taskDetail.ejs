@@ -1,0 +1,11 @@
+
+<h2><%= title %></h2>
+<p><strong>ID:</strong> <%= task.id %></p>
+<p><strong>Título:</strong> <%= task.título %></p>
+<p><strong>Descripción:</strong> <%= task.descripcion %></p>
+<p><strong>Estado:</strong> <%= task.estado %></p>
+<a href="/tasks/<%= task.id %>/edit">Actualizar</a>
+<form action="/tasks/<%= task.id %>?_method=DELETE" method="POST">
+    <button type="submit">Eliminar</button>
+</form>
+<a href="/tasks">Volver a la lista</a>

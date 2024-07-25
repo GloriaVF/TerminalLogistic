@@ -1,0 +1,10 @@
+{
+  "task": [
+    {
+      "id": 1,
+      "título": "Tarea 1",
+      "descripcion": "ad",
+      "estado": "activada"
+    }
+  ]
+}
